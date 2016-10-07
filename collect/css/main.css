@@ -1,0 +1,8 @@
+div.dataTables_filter {
+    float: left;
+    width: 500px
+}
+
+div.dataTables_length {
+    float: right;
+}

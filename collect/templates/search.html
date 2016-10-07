@@ -1,0 +1,8 @@
+{% extends "index.html" %}
+{% block search %}
+    <form action="" method="post" name="login">
+        {{form.hidden_tag()}}
+            <div align="center">Сыграем в игру: {{form.search(size=200, id='search')}} {{form.available(id='av', style="float:bottom")}} В наличии
+            <input style="display: inline;" type="submit" value="Играть"></div>
+    </form>
+{% endblock %}

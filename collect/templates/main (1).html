@@ -1,0 +1,170 @@
+{% extends "index.html" %}
+{% block head %}
+{% block title %}<title>Цены на {{name}} в магазинах настольных игр.</title>{% endblock %}
+  {{ super() }}
+
+<script type="text/javascript">
+
+          $(document).ready( function () {
+
+
+          $.fn.dataTable.ext.search.push(
+    function( settings, data, dataIndex ) {
+        var min = parseInt( $('#min').val(), 10 );
+        var max = parseInt( $('#max').val(), 10);
+        var age = parseFloat( data[2] ) || 0; // use data for the age column
+
+        if ( ( isNaN( min ) && isNaN( max ) ) ||
+             ( isNaN( min ) && age <= max ) ||
+             ( min <= age   && isNaN( max ) ) ||
+             ( min <= age   && age <= max ) )
+        {
+            return true;
+        }
+        return false;
+    }
+);
+
+
+var oldStart = 0;
+            $('#table_id').dataTable( {
+
+            "sAjaxSource":"/ajax_source_prices?q={{name}}",
+            "bDeferRender":true,
+            "deferLoading": 10,
+            "aoColumns":[
+            {"mDataProp":"name",
+            "render":function(data,type,row){
+            return '<a href="'+row.link+'">'+data+'</a>';
+            }
+            },
+            {"mDataProp":"image",
+            "searchable":false,
+            "render":function(data,type,row){
+            return '<img width="120px" height="120px" src="'+data+'">';
+            }
+            },
+            {"mDataProp":"price"},
+            {"mDataProp":"availability",
+            "render":function(data,type,row){
+            return (data === true) ? 'В наличии' : 'Отсутствует';
+            }
+            },
+            {"mDataProp":"shop"},
+            {"mDataProp":"link",
+            "visible":false,
+            "searchable":false
+            }],
+
+
+                      "fnDrawCallback": function (o) {
+            if ( o._iDisplayStart != oldStart ) {
+                var targetOffset = $('#table_id').offset().top;
+                $('html,body').animate({scrollTop: targetOffset}, 500);
+                oldStart = o._iDisplayStart;
+            }
+        },
+
+                    initComplete: function () {
+            var api = this.api();
+
+
+                var column = api.column( 3 );
+                var select = $('<select id="select_available"><option value=""></option></select>')
+                    .appendTo( $('#filter_av') )
+                    .on( 'change', function () {
+                        var val = $.fn.dataTable.util.escapeRegex($(this).val());
+                        if ($.fn.dataTable.util.escapeRegex($(this).val()) == "false")
+                            {val = "Отсутствует";}
+                        if ($.fn.dataTable.util.escapeRegex($(this).val()) == "true")
+                            {val = "В наличии";}
+
+
+                        column
+                            .search( val ? '^'+val+'$' : '', true, false )
+                            .draw();
+                    } );
+
+
+                    $('#select_available').append( '<option value="В наличии">'+"В наличии"+'</option>' );
+                    $('#select_available').append( '<option value="Отсутствует">'+"Отсутствует"+'</option>' );
+
+
+                var column_shop = api.column( 4 );
+                var select = $('<select id="select_shop"><option value=""></option></select>')
+                    .appendTo( $('#filter_shop') )
+                    .on( 'change', function () {
+                        var val = $.fn.dataTable.util.escapeRegex(
+                            $(this).val()
+                        );
+
+                        column_shop
+                            .search( val ? '^'+val+'$' : '', true, false )
+                            .draw();
+                    } );
+
+                column_shop.data().unique().sort().each( function ( d, j ) {
+                    $('#select_shop').append( '<option value="'+d+'">'+d+'</option>' )
+                } );
+        }
+
+
+
+});
+       // Event listener to the two range filtering inputs to redraw on input
+       	var table = $('#table_id').DataTable();
+    $('#min, #max').keyup( function() {
+        table.draw();
+    } );     } );
+      </script>
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-59165141-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/spin.js/1.2.7/spin.min.js"></script>
+ <meta name="robots" content="nofollow"/>
+{% endblock %}
+{% block search %}{{ super() }}{% endblock %}
+{% block content %}
+<br>
+<br>
+
+
+
+
+<div class="row">
+{% block top_left %}
+{{ super() }}
+{% endblock %}
+     <div class="col-xs-8">
+         <h1 align="center" style="font-size:20px">Цены на {{name}} в магазинах настольных игр.</h1>
+        <div align="right" id="filter_av">Показывать - </div><br>
+         <div align="right" id="filter_shop">Магазин - </div><br>
+	<div align="right">Цена от: <input type="text" id="min" name="min" size=6></div>
+	<div align="right">Цена до: <input type="text" id="max" name="max" size=6></div><br>
+
+        <table id="table_id" class="display">
+        <thead>
+        <tr>
+            <th>Название игры</th>
+            <th>Картинка</th>
+            <th>Цена в грн.</th>
+            <th>Доступность</th>
+            <th>Магазин</th>
+            <th>Ссылка</th>
+        </tr>
+    </thead>
+    </table>
+     </div>
+{% block top_right %}
+{{ super() }}
+{% endblock %}
+</div>
+{% endblock %}

@@ -1,0 +1,1 @@
+web: gunicorn collect.app:app --pythonpath collect

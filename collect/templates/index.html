@@ -1,0 +1,181 @@
+﻿<!DOCTYPE html>
+<html>
+        <meta charset="UTF-8">
+        {% block title %}<title>Igropolis - настольные игры в Украине</title> {% endblock %}
+        <head>
+            <meta http-equiv="Content-Type" content="application/javascript; charset=UTF-8" />
+            <meta name="google-site-verification" content="nITaXBuwcHF8vu4PRzxQuSS4y7oRbA-AuvE5_S0zl5c" />
+            <!-- DataTables CSS -->
+            <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.4/css/jquery.dataTables.css">
+            <!-- jQuery -->
+            <script type="text/javascript" charset="utf8" src="//code.jquery.com/jquery-2.1.3.js"></script>
+            <!-- DataTables -->
+            <script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.4/js/jquery.dataTables.js"></script>
+            <link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">
+            <script src="https://code.jquery.com/ui/1.11.1/jquery-ui.js"></script>
+            <link href="/static/css/bootstrap.min.css" rel="stylesheet" media="screen">
+            <script src="/static/js/bootstrap.min.js"></script>
+            <meta name="viewport" content="width=device-width, initial-scale=0.9">
+            {% block head %}
+            <link rel="shortcut icon" href="/static/img/favicon.ico" type="image/x-icon">
+            <meta name="description" content="Igropolis - сайт на котором вы сможете найти данные о ценах на настольные игры в интернет-магазинах, а так же дайджест новостей из мира настольных игр.">
+            <meta name="Keywords" content="каталог, каталог настольных игр, настольные игры, найти,в наличии, Украина, games, проект, грн, цена, цены, сравнить, Манчкин, Игра Престолов, Зомбицид, hobbygames, hobbyworld, toplay, game, warhammer, arkham, mtg, мафия, каркассон, узнать цену, игрокон, 2015, дайджест, новости">
+            <script>
+                $(document).ready( function () {
+                
+                $( "#search" ).autocomplete({
+                source: function( request, response ) {
+                $.ajax({
+                url: "/_search_ajax",
+                dataType: "json",
+                data: {
+                  q: request.term,
+                  av: $('#av').is(':checked')
+                },
+                success: function( data ) {
+                  response( data );
+                }
+                });
+                },
+                minLength: 3
+                });
+                
+                } );
+            </script>
+            <!-- Yandex.Metrika counter -->
+            <script type="text/javascript">
+                (function (d, w, c) {
+                    (w[c] = w[c] || []).push(function() {
+                        try {
+                            w.yaCounter28171308 = new Ya.Metrika({
+                                id:28171308,
+                                webvisor:true
+                            });
+                        } catch(e) { }
+                    });
+                
+                    var n = d.getElementsByTagName("script")[0],
+                        s = d.createElement("script"),
+                        f = function () { n.parentNode.insertBefore(s, n); };
+                    s.type = "text/javascript";
+                    s.async = true;
+                    s.src = (d.location.protocol == "https:" ? "https:" : "http:") + "//mc.yandex.ru/metrika/watch.js";
+                
+                    if (w.opera == "[object Opera]") {
+                        d.addEventListener("DOMContentLoaded", f, false);
+                    } else { f(); }
+                })(document, window, "yandex_metrika_callbacks");
+            </script>
+            <noscript>
+                <div><img src="//mc.yandex.ru/watch/28171308" style="position:absolute; left:-9999px;" alt="" /></div>
+            </noscript>
+            <!-- /Yandex.Metrika counter -->
+            {% endblock %}
+            <script>
+                (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+                })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+                
+                ga('create', 'UA-59165141-1', 'auto');
+                ga('send', 'pageview');
+                
+            </script>
+    </head>
+    <body>
+        <div id="search_string">
+            {% block search %}
+            <div class="row">
+                <div class="col-xs-2 hidden-xs" align="center"><a href="/"><img title="Главная страница" width="180px" height="129px" src="/static/img/loaded_logo.png"> </a> </div>
+                <div class="col-xs-8">
+                    <form style="position: absolute;
+                        top:0px;
+                        bottom: 0;
+                        left: 0;
+                        right: 0;
+                        margin: auto;" action="" method="post" name="login">
+                        {{form.hidden_tag()}}
+                        <div align="center"><h1 style="font-size:16px; display: inline;">Найти настольную игру:</h1> {{form.search(size=30, id='search', placeholder="Введите название игры или его часть")}} {{form.available(id='av', style="float:bottom")}} В наличии
+                            <input style="display: inline;" type="submit" value="Искать" class="btn">
+                        </div>
+                    </form>
+                </div>
+                <div class="col-xs-2 hidden-xs">
+                    <div align="center" style="margin-top:50px"><a href="http://igropolis.com.ua/search_results?search_string=&av=False"><b>Цены на все настольные игры.</b></a> </div>
+                    <div align="center" style="margin-top:50px"><a href="http://igropolis.com.ua/catalogue"><b>Каталог настольных игр.</b></a> </div>
+                </div>
+            </div>
+            {% endblock %}
+        </div>
+        <br><br>
+        {% block content %}
+        <div id="content">
+            <div class="row">
+                {% block top_left %}
+                <div class="col-xs-2 hidden-xs">
+                    <p align="center">
+                    <h4 align="center">Hobby-world новые игры</h4>
+                    </p>
+                    {% for top_item in top1 %}
+                    <div align="center">
+                        <div style="margin: 10px; padding: 10px;">
+                            <img src='{{top_item["image"]}}'><br>
+                            <a href='{{top_item["link"]}}'> {{top_item["name"]}}</a><br>{{top_item["price"]}} грн
+                        </div>
+                    </div>
+                    <br>
+                    {% endfor %}
+                </div>
+                {% endblock %}
+                <div class="col-xs-8" style="min-width: 600px">
+                    <div class="hidden-xs" align="center"><h3>Дайджест новостей из мира Настольных игр.</h3></div>
+                    <a href="/all_news">Все новости</a>
+                    {% for page in pages_count %}
+                        <a href="/news/{{page}}">{{page}}</a>
+                    {% endfor %}
+                    {% for items_row in news | batch(3) %}
+                    <div style="width: 100%;" align="center">
+                        {% for item in items_row %}
+                        <div style="float: left; width: 33%;">
+                            <div style="margin: 10px; padding: 10px;">
+                                <img width="90px" height="90px" align="center" src='{{item["image"]}}'><br>
+                                <a href='{{item["link"]}}'> {{item["name"]}}</a><br>{{item["short_text"]|truncate(80)}}
+                            </div>
+                        </div>
+                    {% endfor %}
+                    </div>
+                    <div style="clear: both;"></div>
+                    {% endfor %}
+                    <a href="/all_news">Все новости</a>
+                    {% for page in pages_count %}
+                        <a href="/news/{{page}}">{{page}}</a>
+                    {% endfor %}
+                </div>
+
+                {% block top_right %}
+                <div class="col-xs-2 hidden-xs">
+                    <p align="center">
+                    <h4 align="center">Топ настольных игр Planetaigr</h4>
+                    </p>
+                    {% for top_item in top2 %}
+                    <div align="center">
+                        <div style="margin: 10px; padding: 10px;">
+                            <img width="160px" height="120px" src='{{top_item["image"]}}'><br>
+                            <a href='{{top_item["link"]}}'> {{top_item["name"]}}</a><br>{{top_item["price"]}} грн
+                        </div>
+                    </div>
+                    <br>
+                    {% endfor %}
+                </div>
+                {% endblock %}
+            </div>
+        </div>
+            {% endblock %}
+        <div id="footer">
+            {% block footer %}
+            <div align="right">&copy; Copyright 2015.</div>
+            <div align="right"><a href="mailto:business.soulnai@gmail.com">Contact mail</a></div>
+            {% endblock %}
+        </div>
+    </body>
+</html>
